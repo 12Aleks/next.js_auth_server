@@ -31,4 +31,17 @@ export class UserService {
             }
         });
     }
+
+    async findById(id: number){
+        return this.prisma.user.findUnique({
+            where: {
+                id: id
+            },
+            select: {
+                id: true,
+                email: true,
+                name: true
+            }
+        });
+    }
 }
