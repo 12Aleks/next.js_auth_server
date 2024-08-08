@@ -6,6 +6,8 @@ import {UserDto} from "../user/dto/user.dto";
 import {JwtService} from "@nestjs/jwt";
 import * as process from "node:process";
 
+const EXPIRE_TIME = 20 * 1000;
+
 @Injectable()
 export class AuthService {
     constructor(private userService: UserService, private  jwtService: JwtService) {}
@@ -23,13 +25,14 @@ export class AuthService {
            user,
            backendToken: {
                accessToken: await this.jwtService.signAsync(payload, {
-                   expiresIn: '5h',
+                   expiresIn: '20s',
                    secret: process.env.JWT_SECRET_KEY
                }),
                refreshToken: await this.jwtService.signAsync(payload, {
                    expiresIn: '7d',
                    secret: process.env.JWT_REFRESH_SECRET_KEY
-               })
+               }),
+               expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME)
            }
        }
     }
@@ -52,13 +55,14 @@ export class AuthService {
 
         return {
             accessToken: await this.jwtService.signAsync(payload, {
-                expiresIn: '5h',
+                expiresIn: '20s',
                 secret: process.env.JWT_SECRET_KEY
             }),
             refreshToken: await this.jwtService.signAsync(payload, {
                 expiresIn: '7d',
                 secret: process.env.JWT_REFRESH_SECRET_KEY
-            })
+            }),
+            expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME)
         }
     }
 }
